@@ -1,0 +1,21 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+    </style>
+
+    <!-- Configuration for Dialog.theme. -->
+    <style name="Dialog.Theme" parent="Theme.AppCompat.Light.Dialog">
+    <!-- BackgroundColor of the date modal -->
+        <item name="colorAccent">#F17171</item>
+    <!-- Change textColor of the date modal -->
+        <item name="android:textColorPrimary">#000000</item>
+    </style>
+
+     <!-- Splash screen theme -->
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/nivaaslogo</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>

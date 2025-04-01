@@ -1,0 +1,121 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services'
+
+react {
+    // Uncomment and configure if necessary
+    // root = file("../")
+    // reactNativeDir = file("../node_modules/react-native")
+    // codegenDir = file("../node_modules/@react-native/codegen")
+    // cliFile = file("../node_modules/react-native/cli.js")
+}
+
+/**
+ * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
+ */
+def enableProguardInReleaseBuilds = true
+
+def jscFlavor = 'org.webkit:android-jsc:+'
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdk rootProject.ext.compileSdkVersion
+
+    namespace "com.nivaas"
+    defaultConfig {
+        applicationId "com.nivaas"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 32
+        versionName "1.5.6"
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            universalApk false
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file('/nivaas.keystore')
+                storePassword ('Juvarya@2020')
+                keyAlias ('upload')
+                keyPassword ('Juvarya@2020')
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+}
+
+dependencies {
+    implementation("com.facebook.react:react-android")
+    implementation project(':react-native-vector-icons')
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
+    implementation project(':react-native-splash-screen')
+    implementation project(':react-native-restart')
+    implementation project(':react-native-version-check')
+
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android")
+    } else {
+        implementation jscFlavor
+    }
+}
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
+applyNativeModulesAppBuildGradle(project)
+
+project.ext.vectoricons = [
+    iconFontNames: [
+        'MaterialCommunityIcons.ttf',
+        'Octicons.ttf',
+        'SimpleLineIcons.ttf',
+        'MaterialIcons.ttf',
+        'EvilIcons.ttf',
+        'Feather.ttf',
+        'AntDesign.ttf',
+        'Entypo.ttf',
+        'FontAwesome.ttf',
+        'FontAwesome5.ttf',
+        'FontAwesome5Brands.ttf',
+        'FontAwesome6.ttf',
+        'Fontisto.ttf',
+        'Ionicons.ttf',
+        'Foundation.ttf'
+    ]
+]
+
+project.ext.react = [
+    entryFile: "index.js",
+    enableHermes: false
+]
+
+// Ensure the vector icons fonts are copied before linting
+tasks.whenTaskAdded { task ->
+    if (task.name == 'generateDebugLintReportModel') {
+        task.dependsOn ':app:copyReactNativeVectorIconFonts'
+    }
+}
+
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
+apply plugin: 'com.google.gms.google-services'
